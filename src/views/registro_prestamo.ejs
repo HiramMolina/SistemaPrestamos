@@ -1,0 +1,58 @@
+<%- include('partials/_header') %>
+
+<h1 class="mt-5 offset-md-1">Registro de prestamo</h1>
+
+<div class="offset-md-1 m-5">
+    <div class="card">
+
+        <div class="col-md-5 card-body">
+            <form action="/buscarRegistro" method="get">
+                <h3>Ingrese el nombre del cliente</h3>
+                <div class="form-group mt-3">
+                    <input type="text" name="nombreCliente" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-dark mt-3">Buscar</button>
+            </form>
+            <button class="btn btn-info mt-3"><a href="/agregar_prestamo">Agregar Prestamo</a></button>
+            
+        </div>
+        
+        <% if (!data) { %>
+            <% var data = { nombreCliente: '', montoPrestamo: '', plazoPrestamo: '' }; %>
+          <% } %>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                  <th>Nombre del Cliente</th>
+                  <th>Monto del Préstamo</th>
+                  <th>Plazo del Préstamo</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (data.nombreCliente !== '' && data.montoPrestamo !== '' && data.plazoPrestamo !== '') { %>
+                    <tr>
+                        <td><%= data.nombreCliente %></td>
+                        <td><%= data.montoPrestamo %></td>
+                        <td><%= data.plazoPrestamo %></td>
+                        <td>
+                          
+                            <button class="btn btn-info mt-3"><a href="/amortizacion">Acción</a></button>
+                        </td>
+                    </tr>
+                <% } else { %>
+                    <!-- Aquí puedes mostrar un mensaje o dejar la fila vacía si no hay datos -->
+                    <tr>
+                        <td colspan="4">No hay datos disponibles</td>
+                    </tr>
+                <% } %>
+            </tbody>
+            </table>
+            
+            
+            
+    </div>
+</div>
+
+
+<%- include('partials/_footer') %>

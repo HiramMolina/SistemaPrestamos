@@ -1,0 +1,64 @@
+<%- include('partials/_header') %>
+  <h1 class="mt-5 offset-md-1">Agregar prestamo</h1>
+
+  <div class="mt-5 offset-md-1">
+    <div id="fecha">
+
+
+
+    </div>
+    <form action="/guardar_prestamo" method="POST">
+
+
+      <label for="clientes">Selecciona un cliente:</label>
+
+      <select name="clientes" id="clientes">
+        <% if (data.clientes && data.clientes.length> 0) { %>
+          <% data.clientes.forEach(function(cliente) { %>
+            <option value="<%= cliente.nombreCliente %>">
+              <%= cliente.nombreCliente %>
+            </option>
+            <% }); %>
+              <% } else { %>
+                <option value="">No hay opciones disponibles</option>
+                <% } %>
+      </select>
+
+
+      <label for="plazo">Selecciona un plazo:</label>
+      <select name="plazo" id="plazo">
+        <% if (data.plazos && data.plazos.length> 0) { %>
+          <% data.plazos.forEach(function(plazo) { %>
+            <option value="<%= plazo.plazo %>">
+              <%= plazo.plazo %>
+            </option>
+            <% }); %>
+              <% } else { %>
+                <option value="">No hay opciones disponibles</option>
+                <% } %>
+      </select>
+
+
+      <label for="monto">Selecciona un monto:</label>
+      <select name="monto" id="monto">
+        <% if (data.montos && data.montos.length> 0) { %>
+          <% data.montos.forEach(function(monto) { %>
+            <option value="<%= monto.monto %>">
+              <%= monto.monto %>
+            </option>
+            <% }); %>
+              <% } else { %>
+                <option value="">No hay opciones disponibles</option>
+                <% } %>
+
+      </select>
+      <button type="submit">Guardar</button>
+    </form>
+
+
+
+
+
+
+
+    <%- include('partials/_footer') %>

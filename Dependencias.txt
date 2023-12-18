@@ -1,0 +1,31 @@
+npm install:
+
+- express: Framework de NodeJS al darnos funciones que ya estan probadas.
+- mysql: Con eso podemos empezar un servidor que conecta a mysql.
+- express-myconnection: Permite utilizar la conexion de MySQL dentro de los middlewars de Express, es decir mientras se va escribiendo el codigo se va teniendo a la mano la conexion de MYSQL para escribir, elminar, actualizar ya escrito en un modulo.
+- morgan: Cada vez que un usuario entre al servidor se podra ver que es lo que esta pidiendo (Una ruta especifica).
+- ejs: Es un motor de plantilla que permite enviar HTML, antes de enviarlos son procesador en el servidor, de ese modo podemos crear condicionales y bucles.
+
+
+npm install express mysql express-myconnection morgan ejs
+
+
+
+"dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-myconnection": "^1.0.4",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1"
+  }
+
+npm install nodemon -D
+
+  - nodemon: Se encarga de reiniciar el servidor cada que hay un cambio.
+  - D: Se instala en las Dev dependencies porque no es crucial para el proyecto como las dependencias tradicionales.
+
+Edito los scripts para ejecutarlo como comando al llamado de "npm run dev" ejecutarlo.
+
+  "scripts": {
+    "dev": "nodemon src/app.js"
+  },

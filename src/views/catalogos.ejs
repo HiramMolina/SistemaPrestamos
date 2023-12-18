@@ -1,0 +1,70 @@
+<%- include('partials/_header') %>
+
+
+
+
+    <div class="row mt-5">
+        <div class="card col-lg-6 row">
+            <div class="card-body">
+                <h1 class="col-lg-6">Catalogo de montos</h1>
+                <h4>Obtenga al instante</h4>
+                <% if (!data) { %>
+                    <% var data={montos:'' ,plazos: '' }; %>
+                        <% } %>
+                            <table class="table table-hover ">
+                                <thead>
+                                    <!-- "Cabeza" de la tabla -->
+                                    <tr>
+                                        <!-- Table Rows -->
+                                        <th>Monto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (data.montos && data.montos.length > 0) { %>
+                                        <% data.montos.forEach((monto) => { %>
+                                            <tr>
+                                                <td><%= monto.monto %></td>
+                                            </tr>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="1">No se encontraron montos</td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                            </table>
+            </div>
+        </div>
+
+        <div class="card col-lg-6 row">
+            <div class="card-body">
+                <h1 class="col-lg-6">Catalogo de plazos</h1>
+                <h4>Un plazo equivale a 15 días</h4>
+                <table class="table table-hover ">
+                    <thead>
+                        <!-- "Cabeza" de la tabla -->
+                        <tr>
+                            <!-- Table Rows -->
+                            <th>N° de plazos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (data.plazos && data.plazos.length > 0) { %>
+                            <% data.plazos.forEach((plazo) => { %>
+                                <tr>
+                                    <td><%= plazo.plazo %></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="1">No se encontraron plazos</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/_footer') %>

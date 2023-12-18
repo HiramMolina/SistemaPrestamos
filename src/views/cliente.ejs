@@ -1,0 +1,72 @@
+<!-- Se usarán includes para no repetir codigo -->
+<%- include('partials/_header') %>
+
+    <h1 class="mt-5 offset-md-1">Catalogo clientes</h1>
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-7">
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <!-- "Cabeza" de la tabla -->
+                        <tr>
+                            <!-- Table Rows -->
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Numero</th>
+                            <th>Email</th>
+                            <th>Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Cuerpo de la tabla -->
+                        <!-- Es necesario de algun modo recorrer los datos (Bucle for) -->
+                        <%if(data) { %>
+                            <%for (var i=0; i < data.length; i++) { %>
+                                <tr>
+                                    <!-- El simbolo de igual es para demostrar que se busca interpretar los datos por pantalla -->
+                                    <td>
+                                        <%= data[i].idCliente %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].nombreCliente %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].telCliente %>
+                                    </td>
+                                    <td>
+                                        <%= data[i].emailCliente %>
+                                    </td>
+                                    <td>
+                                        <!-- Ambos usan el idCliente pues de eso se basan para buscar el registro al ser registro unico -->
+                                        <a href="/eliminar/<%= data[i].idCliente %>"
+                                            class="btn btn-danger btn-sm">Eliminar</a>
+                                        <a href="/actualizar/<%= data[i].idCliente %>"
+                                            class="btn btn-info btn-sm">Actualizar</a>
+                                    </td>
+                                </tr>
+                                <% } %>
+                                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-5 card">
+                <form action="/add" method="post">
+                    <div class="form-group mt-3">
+                        <input type="text" name="nombreCliente" placeholder="Nombre Cliente" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" name="telCliente" placeholder="Telefono Cliente" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" name="emailCliente" placeholder="Email Cliente" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-dark mt-5">Guardar</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/_footer') %>
