@@ -1,4 +1,5 @@
 const controller = {};
+const moment = require('moment');
 
 // LISTAR LEER DATOS
 controller.list = (req, res) => {
@@ -7,7 +8,7 @@ controller.list = (req, res) => {
             if (err) {
                 res.json(err);
             } //Si no encuentra un error VVV
-            console.log(cliente);
+            
             const data = cliente;
             res.render('cliente', { data });
         });
@@ -43,7 +44,7 @@ controller.actualizar = (req, res) => {
 
     req.getConnection((err, conn) => {
         conn.query('SELECT * FROM cliente WHERE idCliente = ?', [idCliente], (err, cliente) => {
-            console.log('Funcion actualizar');
+            
             res.render('cliente_editar', {
                 data: cliente[0]
 
@@ -57,7 +58,7 @@ controller.actualizar = (req, res) => {
 controller.guardarEdit = (req, res) => {
     const { idCliente } = req.params;
     const nuevosDatos = req.body;
-    console.log('Datos recibidos para actualizar:', nuevosDatos); // Verifica los datos recibidos del formulario
+    
     //Metemos todos los datos en body
     req.getConnection((err, conn) => {
         conn.query('UPDATE cliente SET ? WHERE idCliente = ?', [nuevosDatos, idCliente], (err, cliente) => {
@@ -94,10 +95,10 @@ controller.buscar = (req, res) => {
     req.getConnection((err, conn) => {
         conn.query('SELECT * FROM prestamo WHERE nombreCliente = ?', [nombreCliente], (err, cliente) => {
             if (err || cliente.length === 0) {
-                console.log('No se encontró el cliente o hubo un error en la consulta.');
+                
                 res.redirect('/registro_prestamo');
             } else {
-                console.log('Datos del cliente encontrado:', cliente);
+                
                 const data = cliente[0];
                 res.render('registro_prestamo', { data });
             }
@@ -107,86 +108,6 @@ controller.buscar = (req, res) => {
 
 // **********************SECCION DROPDOWNS********************************
 
-// controller.aggPrestamo= (req,res) => {
-//     req.getConnection ((err,conn) => {
-//         conn.query('SELECT nombreCliente FROM cliente', (err, opcionesNombre) => {
-//             if(err){
-//                 res.json(err);
-//             } //Si no encuentra un error VVV
-//             console.log(opcionesNombre);
-//             const data = opcionesNombre;
-//             res.render('agregar_prestamo', {data});
-//         });
-//     });
-// };
-
-// controller.aggPlazo= (req,res) => {
-//     req.getConnection ((err,conn) => {
-//         conn.query('SELECT plazo FROM plazo', (err, opcionesPlazo) => {
-//             if(err){
-//                 res.json(err);
-//             } //Si no encuentra un error VVV
-//             console.log(opcionesPlazo);
-//             const data = opcionesPlazo;
-//             res.render('agregar_prestamo', {data});
-//         });
-//     });
-// };
-
-
-
-// const obtenerClientes = () => {
-//     req.getConnection ((err,conn) => {
-//         conn.query('SELECT nombreCliente FROM cliente', (err, opcionesNombre) => {
-//             if(err){
-//                 res.json(err);
-//             } //Si no encuentra un error VVV
-//             console.log(opcionesNombre);
-//             const data = opcionesNombre;
-//             // res.render('agregar_prestamo', {data});
-//     return opcionesClientes; // Supongamos que opcionesClientes contiene un array de objetos con valores y textos para los clientes
-//         });
-//     });
-// };
-
-// const obtenerPlazos = () => {
-//     req.getConnection ((err,conn) => {
-//         conn.query('SELECT plazo FROM plazo', (err, opcionesPlazo) => {
-//             if(err){
-//                 res.json(err);
-//             } //Si no encuentra un error VVV
-//             console.log(opcionesPlazo);
-//             const data = opcionesPlazo;
-//     return opcionesPlazos; // Supongamos que opcionesPlazos contiene un array de objetos con valores y textos para los plazos
-//         });
-//     });
-// };
-
-// const obtenerMontos = () => {
-//     req.getConnection ((err,conn) => {
-//         conn.query('SELECT Monto FROM monto', (err, opcionesMonto) => {
-//             if(err){
-//                 res.json(err);
-//             } //Si no encuentra un error VVV
-//             console.log(opcionesMonto);
-//             const data = opcionesMonto;
-//             // res.render('agregar_prestamo', {data});
-//     return opcionesMontos;
-//         });
-//     });
-// };
-
-// controller.renderizarSelects = (req, res) => {
-//     req.getConnection((err, conn) => {
-//         const data = {
-//             clientes: obtenerClientes(),
-//             plazos: obtenerPlazos(),
-//             montos: obtenerMontos()
-//         };
-//         res.render('agregar_prestamo', { data });
-//         }
-//     )}
-
 const obtenerClientes = (conn) => {
     return new Promise((resolve, reject) => {
         conn.query('SELECT nombreCliente FROM cliente', (err, opcionesNombre) => {
@@ -194,7 +115,7 @@ const obtenerClientes = (conn) => {
                 reject(err);
             } else {
                 resolve(opcionesNombre);
-                console.log(opcionesNombre);
+                
             }
         });
     });
@@ -238,45 +159,23 @@ controller.mandarSelects = (req, res) => {
                         plazos: resultados[1],
                         montos: resultados[2]
                     };
-                    console.log(data);
+                  
                     res.render('agregar_prestamo', { data });
                 })
         }
     });
 };
 
-// controller.guardarSelects = (req, res) => {
-//     const {clientes, monto, plazo} = req.body;
-//     console.log('Nombre:',clientes);
-//     console.log('Monto:',monto);
-//     console.log('Plazo:',plazo);
-//     //Metemos todos los datos en body
-//     req.getConnection((err, conn) => {
-//         conn.query('INSERT INTO (nombreCliente, montoPrestamo, plazoPrestamo ) VALUES (?,?,?)', [clientes, monto, plazo], (err, datos) => {
-//             const = values = [clientes,monto,plazo];
-//             console.log('SE VA A MANDAR: ', clientes, plazo, monto);
-//             console.log('LOS DATOS SON: ', datos);
-//             res.redirect('/registro_prestamo');
-//         })
-//     })
-// };
-
 controller.guardarSelects = (req, res) => {
     const { clientes, monto, plazo } = req.body;
-    console.log('Nombre:', clientes);
-    console.log('Monto:', monto);
-    console.log('Plazo:', plazo);
-
     req.getConnection((err, conn) => {
         if (err) {
             // Manejar el error de conexión
             console.error('Error de conexión:', err);
             return res.status(500).send('Error de conexión');
         }
-
         const sql = 'INSERT INTO prestamo (nombreCliente, montoPrestamo, plazoPrestamo) VALUES (?, ?, ?)';
         const values = [clientes, monto, plazo];
-        
         conn.query(sql, values, (err, result) => {
             if (err) {
                 // Manejar el error de la consulta SQL
@@ -292,33 +191,6 @@ controller.guardarSelects = (req, res) => {
 
 // ******************************** CATALOGO MONTOS Y PLAZOS **********************************************************************************************
 
-// controller.listar = (req, res) => {
-//     req.getConnection((err, conn) => {
-//         conn.query('SELECT monto FROM monto', (err, cliente) => {
-//             if (err) {
-//                 res.json(err);
-//             } //Si no encuentra un error VVV
-//             console.log(cliente);
-//             const data = cliente;
-//             res.render('catalogos', { data });
-//         });
-//     });
-// };
-
-// controller.listarplazo = (req, res) => {
-//     setTimeout(function() {
-//         req.getConnection((err, conn) => {
-//             conn.query('SELECT plazo FROM plazo', (err, cliente) => {
-//                 if (err) {
-//                     res.json(err);
-//                 } //Si no encuentra un error VVV
-//                 console.log(cliente);
-//                 const data = cliente;
-//                 res.render('catalogos', { data });
-//             });
-//         });
-//       }, 500); 
-// };
 
 const obtenerCatMontos = (conn) => {
     return new Promise((resolve, reject) => {
@@ -327,7 +199,7 @@ const obtenerCatMontos = (conn) => {
                 reject(err);
             } else {
                 resolve(opcionesMontos);
-                console.log(opcionesMontos);
+                
             }
         });
     });
@@ -355,11 +227,9 @@ controller.mandarCatalogos = (req, res) => {
             ])
                 .then((resultados) => {
                     const data = {
-                    
                         montos: resultados[0],
                         plazos: resultados[1]
                     };
-                    console.log(data);
                     res.render('catalogos', { data });
                 })
         }
@@ -372,7 +242,7 @@ controller.genTabla = (req, res) => {
             if (err) {
                 res.json(err);
             } //Si no encuentra un error VVV
-            console.log(cliente);
+            
             const data = cliente;
             res.render('amortizacion', { data });
         });
@@ -382,21 +252,59 @@ controller.genTabla = (req, res) => {
 
 // ******************************************** TABLA AMORTIZACION **********************************************
 
-controller.obtenerNombre = (req, res) => {
-    const { nombreCliente } = req.query;
+controller.genAmort = (req, res) => {
+    const { idprestamo } = req.params; //SE EXTRAE IDPRESTAMO
     req.getConnection((err, conn) => {
-        conn.query('SELECT nombreCliente FROM prestamo WHERE nombreCliente = ?', [nombreCliente], (err, cliente) => {
-            if (err || cliente.length === 0) {
-                console.log('No se encontró el cliente o hubo un error en la consulta.');
-                res.redirect('/registro_prestamo');
-            } else {
-                console.log('Datos del cliente encontrado:', cliente);
-                const nombre = cliente[0];
-                res.render('amortizacion', { nombre });
+        conn.query('SELECT * FROM prestamo WHERE idprestamo = ?', [idprestamo], (err, cliente) => {
+            console.log(cliente);
+            //Formateo de fechas
+            const fechaRegistro = cliente[0].fecha_registro;
+            const fechaFormateada = moment(fechaRegistro).format('DD-MM-YYYY');
+            
+            //Calcular interés
+            const plazoPrestamo = cliente[0].plazoPrestamo;
+            const montoPrestamo = cliente[0].montoPrestamo;
+            const interes  = (11/100) * montoPrestamo;
+            const pagoPlazo = montoPrestamo / plazoPrestamo;
+            const abono = pagoPlazo + interes;
+
+            const interesTotal = interes * plazoPrestamo;
+            const pagoTotal = (interesTotal*1) + (montoPrestamo*1);
+
+            const dataenviar = {
+                ...cliente[0],
+                fecha_registro: fechaFormateada,
+                interes: interes,
+                abono: abono,
+                pagoPlazo: pagoPlazo,
+                interesTotal: interesTotal,
+                pagoTotal: pagoTotal
+            };
+
+            // Obtener fechas de pago cada 15 días
+            const fechasPago = [];
+            let currentDate = moment(fechaRegistro);
+            while (currentDate.isBefore(moment().add(plazoPrestamo, 'days'))) {
+                fechasPago.push(currentDate.format('DD-MM-YYYY'));
+                currentDate = currentDate.add(15, 'days');
             }
+
+            res.render('amortizacion', {
+                data: dataenviar,
+                fechasPago: fechasPago // Pasar las fechas de pago a la vista
+                
+            });
+            console.log(fechasPago);
+            console.log(currentDate);
         });
     });
 };
+
+
+
+
+ 
+
 
 
 module.exports = controller;

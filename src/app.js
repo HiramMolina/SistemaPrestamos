@@ -3,6 +3,7 @@ const express = require('express'); //Requerir express
 const morgan = require('morgan');   //Se usan en los middlewares
 const app = express();              //Se inicializa a traves de la constante app
 
+
 const path = require('path'); //Modulo encargado de unir directorios
 const mysql = require('mysql'); //Permite la conexión y la interacción con bases de datos MySQL desde una aplicación Node.js
 const myConnection = require('express-myconnection'); //simplifica el manejo de conexiones a bases de datos MySQL en aplicaciones Express. Facilita la gestión de conexiones a la base de datos, permitiendo reutilizar las conexiones en diferentes rutas y manejarlas de manera más eficiente.

@@ -18,7 +18,7 @@
         </div>
         
         <% if (!data) { %>
-            <% var data = { nombreCliente: '', montoPrestamo: '', plazoPrestamo: '' }; %>
+            <% var data = {idprestamo: '', nombreCliente: '', montoPrestamo: '', plazoPrestamo: '' }; %>
           <% } %>
         <table class="table table-bordered table-hover">
             <thead>
@@ -30,18 +30,24 @@
                 </tr>
               </thead>
               <tbody>
-                <% if (data.nombreCliente !== '' && data.montoPrestamo !== '' && data.plazoPrestamo !== '') { %>
+                <% if (data.idprestamo !== '' && data.nombreCliente !== '' && data.montoPrestamo !== '' && data.plazoPrestamo !== '') { %>
                     <tr>
+                        <%= data.idprestamo %>
+                        
                         <td><%= data.nombreCliente %></td>
                         <td><%= data.montoPrestamo %></td>
                         <td><%= data.plazoPrestamo %></td>
                         <td>
-                          
-                            <button class="btn btn-info mt-3"><a href="/amortizacion">Acción</a></button>
+                            <button class="btn btn-info mt-3">
+                                <a href="/genAmort/<%= data.idprestamo %>"class="btn btn-info btn-sm">Accion</a>
+                            </button>
+                        </td>
+                        <td>
+                            
+                           
                         </td>
                     </tr>
                 <% } else { %>
-                    <!-- Aquí puedes mostrar un mensaje o dejar la fila vacía si no hay datos -->
                     <tr>
                         <td colspan="4">No hay datos disponibles</td>
                     </tr>

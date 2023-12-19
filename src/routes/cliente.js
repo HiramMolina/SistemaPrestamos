@@ -38,7 +38,11 @@ router.get('/catalogos', clienteController.mandarCatalogos);
 
 router.get('/amortizacion', clienteController.genTabla);
 
-router.get('/obtenerNombre', clienteController.obtenerNombre);
+// router.get('/obtenerNombre', clienteController.obtenerNombre);
+// VER AMORTIZACION
+router.get('/genAmort/:idprestamo', clienteController.genAmort);
+
+
 
 module.exports = router;
 

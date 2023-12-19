@@ -5,68 +5,40 @@
 <div class="container">
     <div class="row mt-5">
         <div class="col-md-7">
-
-            <h4>Cliente:</h4>
-            <p><%= nombre %></p>
-            <h4>No. Pago:</h4>
+            <h4>Cliente:</h4> 
+            <h4><%= data.nombreCliente %></h4> <br>
+            <h4>No. Pago:</h4> 
+            <h4><%= data.plazoPrestamo %></h4> <br>
+            
             <table class="table table-bordered table-hover">
                 <thead>
-                    <!-- "Cabeza" de la tabla -->
                     <tr>
-                        <!-- Table Rows -->
-                        <th>No.Pago</th>
+                        <th>Plazo</th>
                         <th>Fecha</th>
-                        <th>Prestamo</th>
-                        <th>Intereses</th>
+                        <th>Monto</th>
+                        <th>Interes</th>
                         <th>Abono</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Cuerpo de la tabla -->
-                    <!-- Es necesario de algun modo recorrer los datos (Bucle for) -->
-                    <%if(data) { %>
-                        <%for (var i=0; i < data.length; i++) { %>
-                            <tr>
-                                <!-- El simbolo de igual es para demostrar que se busca interpretar los datos por pantalla -->
-                                <td>
-                                    <%= data[i].idCliente %>
-                                </td>
-                                <td>
-                                    <%= data[i].nombreCliente %>
-                                </td>
-                                <td>
-                                    <%= data[i].telCliente %>
-                                </td>
-                                <td>
-                                    <%= data[i].emailCliente %>
-                                </td>
-                                <td>
-                                    <%= data[i].Abono %>
-                                </td>
-                                
-                            </tr>
-                            <% } %>
-                                <% } %>
+                    <!-- Dependiendo de que dato jale de plazo prestamo -->
+                    <% for (let i = 1; i <= data.plazoPrestamo; i++) { %>
+                        <tr>
+                            <td><%= i %></td>
+                            <td><%= data.fecha_registro %></td>
+                            <td>$ <%= data.pagoPlazo %></td>
+                            <td>$ <%= data.interes %></td>
+                            <td>$ <%= data.abono %></td>
+                        </tr>
+                    <% } %>
+                    <td></td>
+                    <td>Total:</td>
+                    <td>$ <%= data.montoPrestamo%></td>
+                    <td>$ <%= data.interesTotal%></td>
+                    <td>$ <%= data.pagoTotal%></td>
                 </tbody>
             </table>
         </div>
-
-        
-        <!-- <div class="col-md-5 card">
-            <form action="/add" method="post">
-                <div class="form-group mt-3">
-                    <input type="text" name="nombreCliente" placeholder="Nombre Cliente" class="form-control">
-                </div>
-                <div class="form-group mt-3">
-                    <input type="text" name="telCliente" placeholder="Telefono Cliente" class="form-control">
-                </div>
-                <div class="form-group mt-3">
-                    <input type="text" name="emailCliente" placeholder="Email Cliente" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-dark mt-5">Guardar</button>
-            </form>
-        </div> -->
     </div>
 </div>
 
