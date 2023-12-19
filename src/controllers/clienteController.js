@@ -29,7 +29,6 @@ controller.guardar = (req, res) => {
 // DELETE DATOS
 controller.eliminar = (req, res) => {
     const { idCliente } = req.params;
-
     req.getConnection((err, conn) => {
         conn.query('DELETE FROM cliente WHERE idCliente = ?', [idCliente], (err, rows) => {
             res.redirect('/');
@@ -41,10 +40,8 @@ controller.eliminar = (req, res) => {
 // UPDATE DATOS
 controller.actualizar = (req, res) => {
     const { idCliente } = req.params;
-
     req.getConnection((err, conn) => {
         conn.query('SELECT * FROM cliente WHERE idCliente = ?', [idCliente], (err, cliente) => {
-            
             res.render('cliente_editar', {
                 data: cliente[0]
 
@@ -71,52 +68,83 @@ controller.guardarEdit = (req, res) => {
     })
 };
 
-//PAGINA REGISTRO DE PRESTAMO
 
-//BUSCAR REGISTRO
-// controller.buscar= (req,res) => {
-//     const {nombreCliente} = req.params;
-//     req.getConnection ((err,conn) => {
+//PAGINA REGISTRO DE PRESTAMO
+// controller.buscar = (req, res) => {
+//     const { nombreCliente } = req.query;
+//     req.getConnection((err, conn) => {
 //         conn.query('SELECT * FROM cliente WHERE nombreCliente = ?', [nombreCliente], (err, cliente) => {
-//             if(err || cliente.length === 0){
-//                 console.log('No se encontró el cliente');
-//                 // CREAR VENTANA ALERTA NO ENCONTRADO
-//             }else{//Si no encuentra un error VVV
-//                 console.log(cliente);
+//             if (err || cliente.length === 0) {
+//                 res.redirect('/registro_prestamo');
+//             } else {
 //                 const data = cliente[0];
-//             } 
-//             res.render('/registro_prestamo', {data});
+//                 console.log(cliente);
+//                 res.render('registro_prestamo', { data });
+//                 console.log(nombreCliente);
+//             }
 //         });
 //     });
 // };
 
+//REMAKE DE CONTROLLER BUSCAR
+
 controller.buscar = (req, res) => {
     const { nombreCliente } = req.query;
     req.getConnection((err, conn) => {
-        conn.query('SELECT * FROM prestamo WHERE nombreCliente = ?', [nombreCliente], (err, cliente) => {
-            if (err || cliente.length === 0) {
-                
-                res.redirect('/registro_prestamo');
-            } else {
-                
-                const data = cliente[0];
-                res.render('registro_prestamo', { data });
-            }
-        });
+        if (err) {
+            // Manejo de errores de conexión
+            console.log('Conexion fallida');
+        } else {
+            // Consulta para obtener datos del cliente
+            conn.query('SELECT * FROM cliente WHERE nombreCliente = ?', [nombreCliente], (err, cliente) => {
+                if (err || cliente.length === 0) { //Si el nombre viene vacio, falla
+                    console.log('Cliente no encontrado');
+                } else { //Si el nombre si tiene registro:
+                    // console.log('Cliente: ', cliente);
+                    // console.log('Cliente encontrado como: ' ,nombreCliente);
+
+                    const clienteData = cliente[0];
+                    const idCliente = clienteData.idCliente; // Extraer el idCliente del cliente encontrado
+                    // console.log('idCliente: ',idCliente);
+                    // Consulta de prestamo utilizando el idCliente extraido
+                    conn.query('SELECT * FROM prestamo WHERE idCliente = ?', [idCliente], (err, prestamos) => {
+                        // console.log('Datos crudos de la consulta: ',prestamos);
+                        if (err) {
+                            console.log('Error');
+                        } else {
+                            const otraTablaData = prestamos[0];
+                            // console.log('Otra tabla data',otraTablaData);
+                            res.render('registro_prestamo', { 
+                                clienteData,otraTablaData  });
+                        }
+                    });
+                }
+            });
+        }
     });
 };
+
+
+
+
+
+
+
 
 // **********************SECCION DROPDOWNS********************************
 
 const obtenerClientes = (conn) => {
     return new Promise((resolve, reject) => {
-        conn.query('SELECT nombreCliente FROM cliente', (err, opcionesNombre) => {
+        conn.query('SELECT idCliente, nombreCliente FROM cliente', (err, opcionesNombre) => {
             if (err) {
                 reject(err);
             } else {
                 resolve(opcionesNombre);
-                
             }
+            console.log('OPCIONES',opcionesNombre);
+            idExtraida = opcionesNombre.idCliente;
+
+            console.log('ID',idExtraida);
         });
     });
 };
@@ -159,7 +187,7 @@ controller.mandarSelects = (req, res) => {
                         plazos: resultados[1],
                         montos: resultados[2]
                     };
-                  
+                //   console.log('DATA RESOLVIDA',data);
                     res.render('agregar_prestamo', { data });
                 })
         }
@@ -174,7 +202,7 @@ controller.guardarSelects = (req, res) => {
             console.error('Error de conexión:', err);
             return res.status(500).send('Error de conexión');
         }
-        const sql = 'INSERT INTO prestamo (nombreCliente, montoPrestamo, plazoPrestamo) VALUES (?, ?, ?)';
+        const sql = 'INSERT INTO prestamo (idCliente, montoPrestamo, plazoPrestamo) VALUES (?, ?, ?)';
         const values = [clientes, monto, plazo];
         conn.query(sql, values, (err, result) => {
             if (err) {
@@ -279,6 +307,7 @@ controller.genAmort = (req, res) => {
                 pagoPlazo: pagoPlazo,
                 interesTotal: interesTotal,
                 pagoTotal: pagoTotal
+                
             };
 
             // Obtener fechas de pago cada 15 días
@@ -288,23 +317,18 @@ controller.genAmort = (req, res) => {
                 fechasPago.push(currentDate.format('DD-MM-YYYY'));
                 currentDate = currentDate.add(15, 'days');
             }
-
+            const newDate = currentDate.format('DD-MM-YYYY');
+            console.log('NEW',newDate);
             res.render('amortizacion', {
                 data: dataenviar,
                 fechasPago: fechasPago // Pasar las fechas de pago a la vista
                 
             });
-            console.log(fechasPago);
-            console.log(currentDate);
+            console.log('FECHA PAGO', fechasPago);
+            console.log('CURRENT',currentDate);
         });
     });
 };
-
-
-
-
- 
-
 
 
 module.exports = controller;

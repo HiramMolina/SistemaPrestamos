@@ -26,7 +26,7 @@ app.use(myConnection(mysql, {
     user: 'root',
     password: '',
     port: 3306,
-    database: 'prestamos'
+    database: 'sistemaprestamo'
 }, 'single'));
 
 //urlencoded es el tipo de datos que se espera recibir

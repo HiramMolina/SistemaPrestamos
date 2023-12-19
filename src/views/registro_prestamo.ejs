@@ -17,34 +17,34 @@
             
         </div>
         
-        <% if (!data) { %>
-            <% var data = {idprestamo: '', nombreCliente: '', montoPrestamo: '', plazoPrestamo: '' }; %>
-          <% } %>
+        <% if (!clienteData || !otraTablaData) { %>
+            <!-- SI ALGUNA DE LAS 2 ES FALSA SE INICIAN VACIAS -->
+            <% var clienteData = { idCliente: '', nombreCliente: '' }; %> 
+            <% var otraTablaData = { montoPrestamo: '', plazoPrestamo: '' }; %>
+        <% } %>
+        
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
-                  <th>Nombre del Cliente</th>
-                  <th>Monto del Préstamo</th>
-                  <th>Plazo del Préstamo</th>
-                  <th>Acciones</th>
+                    <th>ID Cliente</th>
+                    <th>Nombre del Cliente</th>
+                    <th>Monto del Préstamo</th>
+                    <th>Plazo del Préstamo</th>
+                    <th>Acciones</th>
                 </tr>
-              </thead>
-              <tbody>
-                <% if (data.idprestamo !== '' && data.nombreCliente !== '' && data.montoPrestamo !== '' && data.plazoPrestamo !== '') { %>
+            </thead>
+            <tbody>
+                <% if (clienteData.idCliente !== '' && clienteData.nombreCliente !== '' && otraTablaData.montoPrestamo !== '' && otraTablaData.plazoPrestamo !== '') { %>
+                    <!-- SI ALGUNO DE ESTOS DATOS ESTA VACIO, NO SE MUESTRA INFO -->
                     <tr>
-                        <%= data.idprestamo %>
-                        
-                        <td><%= data.nombreCliente %></td>
-                        <td><%= data.montoPrestamo %></td>
-                        <td><%= data.plazoPrestamo %></td>
+                        <td><%= clienteData.idCliente %></td>
+                        <td><%= clienteData.nombreCliente %></td>
+                        <td><%= otraTablaData.montoPrestamo %></td>
+                        <td><%= otraTablaData.plazoPrestamo %></td>
                         <td>
                             <button class="btn btn-info mt-3">
-                                <a href="/genAmort/<%= data.idprestamo %>"class="btn btn-info btn-sm">Accion</a>
+                                <a href="/genAmort/<%= clienteData.idCliente %>" class="btn btn-info btn-sm">Accion</a>
                             </button>
-                        </td>
-                        <td>
-                            
-                           
                         </td>
                     </tr>
                 <% } else { %>
@@ -53,7 +53,7 @@
                     </tr>
                 <% } %>
             </tbody>
-            </table>
+        </table>
             
             
             

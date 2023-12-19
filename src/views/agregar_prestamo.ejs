@@ -8,14 +8,11 @@
 
     </div>
     <form action="/guardar_prestamo" method="POST">
-
-
       <label for="clientes">Selecciona un cliente:</label>
-
       <select name="clientes" id="clientes">
         <% if (data.clientes && data.clientes.length> 0) { %>
           <% data.clientes.forEach(function(cliente) { %>
-            <option value="<%= cliente.nombreCliente %>">
+            <option value="<%= cliente.idCliente %>">
               <%= cliente.nombreCliente %>
             </option>
             <% }); %>

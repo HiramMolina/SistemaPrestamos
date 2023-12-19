@@ -1,46 +1,60 @@
 <%- include('partials/_header') %>
 
-<h1 class="mt-5 offset-md-1">Tabla de amortizacion</h1>
+    <h1 class="mt-5 offset-md-1">Tabla de amortizacion</h1>
 
-<div class="container">
-    <div class="row mt-5">
-        <div class="col-md-7">
-            <h4>Cliente:</h4> 
-            <h4><%= data.nombreCliente %></h4> <br>
-            <h4>No. Pago:</h4> 
-            <h4><%= data.plazoPrestamo %></h4> <br>
-            
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Plazo</th>
-                        <th>Fecha</th>
-                        <th>Monto</th>
-                        <th>Interes</th>
-                        <th>Abono</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dependiendo de que dato jale de plazo prestamo -->
-                    <% for (let i = 1; i <= data.plazoPrestamo; i++) { %>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-7">
+                <h4>Cliente:</h4>
+                <h4>
+                    <%= data.nombreCliente %>
+                </h4> <br>
+                <h4>No. Pago:</h4>
+                <h4>
+                    <%= data.plazoPrestamo %>
+                </h4> <br>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
                         <tr>
-                            <td><%= i %></td>
-                            <td><%= data.fecha_registro %></td>
-                            <td>$ <%= data.pagoPlazo %></td>
-                            <td>$ <%= data.interes %></td>
-                            <td>$ <%= data.abono %></td>
+                            <th>Plazo</th>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Interes</th>
+                            <th>Abono</th>
                         </tr>
-                    <% } %>
-                    <td></td>
-                    <td>Total:</td>
-                    <td>$ <%= data.montoPrestamo%></td>
-                    <td>$ <%= data.interesTotal%></td>
-                    <td>$ <%= data.pagoTotal%></td>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <!-- Dependiendo de que dato jale de plazo prestamo -->
+                        <% for (let i=1; i <=data.plazoPrestamo; i++) { %>
+                            <tr>
+                                <td>
+                                    <%= i %>
+                                </td>
+                                <td>
+                                    <%= data.fecha_registro %>
+                                </td>
+                                <td>$ <%= data.pagoPlazo %>
+                                </td>
+                                <td>$ <%= data.interes %>
+                                </td>
+                                <td>$ <%= data.abono %>
+                                </td>
+                            </tr>
+                            <% } %>
+                                <td></td>
+                                <td>Total:</td>
+                                <td>$ <%= data.montoPrestamo%>
+                                </td>
+                                <td>$ <%= data.interesTotal%>
+                                </td>
+                                <td>$ <%= data.pagoTotal%>
+                                </td>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
 
-<%- include('partials/_footer') %>
+    <%- include('partials/_footer') %>
