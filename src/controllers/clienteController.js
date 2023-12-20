@@ -8,7 +8,7 @@ controller.list = (req, res) => {
             if (err) {
                 res.json(err);
             } //Si no encuentra un error VVV
-            
+
             const data = cliente;
             res.render('cliente', { data });
         });
@@ -55,7 +55,7 @@ controller.actualizar = (req, res) => {
 controller.guardarEdit = (req, res) => {
     const { idCliente } = req.params;
     const nuevosDatos = req.body;
-    
+
     //Metemos todos los datos en body
     req.getConnection((err, conn) => {
         conn.query('UPDATE cliente SET ? WHERE idCliente = ?', [nuevosDatos, idCliente], (err, cliente) => {
@@ -68,23 +68,6 @@ controller.guardarEdit = (req, res) => {
     })
 };
 
-
-//PAGINA REGISTRO DE PRESTAMO
-// controller.buscar = (req, res) => {
-//     const { nombreCliente } = req.query;
-//     req.getConnection((err, conn) => {
-//         conn.query('SELECT * FROM cliente WHERE nombreCliente = ?', [nombreCliente], (err, cliente) => {
-//             if (err || cliente.length === 0) {
-//                 res.redirect('/registro_prestamo');
-//             } else {
-//                 const data = cliente[0];
-//                 console.log(cliente);
-//                 res.render('registro_prestamo', { data });
-//                 console.log(nombreCliente);
-//             }
-//         });
-//     });
-// };
 
 //REMAKE DE CONTROLLER BUSCAR
 
@@ -114,8 +97,9 @@ controller.buscar = (req, res) => {
                         } else {
                             const otraTablaData = prestamos[0];
                             // console.log('Otra tabla data',otraTablaData);
-                            res.render('registro_prestamo', { 
-                                clienteData,otraTablaData  });
+                            res.render('registro_prestamo', {
+                                clienteData, otraTablaData
+                            });
                         }
                     });
                 }
@@ -127,11 +111,7 @@ controller.buscar = (req, res) => {
 
 
 
-
-
-
-
-// **********************SECCION DROPDOWNS********************************
+// **********************REGISTRAR PRESTAMO - SECCION SELECTS********************************
 
 const obtenerClientes = (conn) => {
     return new Promise((resolve, reject) => {
@@ -141,10 +121,10 @@ const obtenerClientes = (conn) => {
             } else {
                 resolve(opcionesNombre);
             }
-            console.log('OPCIONES',opcionesNombre);
+            // console.log('OPCIONES', opcionesNombre);
             idExtraida = opcionesNombre.idCliente;
 
-            console.log('ID',idExtraida);
+            // console.log('ID', idExtraida);
         });
     });
 };
@@ -187,7 +167,7 @@ controller.mandarSelects = (req, res) => {
                         plazos: resultados[1],
                         montos: resultados[2]
                     };
-                //   console.log('DATA RESOLVIDA',data);
+                    //   console.log('DATA RESOLVIDA',data);
                     res.render('agregar_prestamo', { data });
                 })
         }
@@ -198,27 +178,77 @@ controller.guardarSelects = (req, res) => {
     const { clientes, monto, plazo } = req.body;
     req.getConnection((err, conn) => {
         if (err) {
-            // Manejar el error de conexión
             console.error('Error de conexión:', err);
             return res.status(500).send('Error de conexión');
         }
+
         const sql = 'INSERT INTO prestamo (idCliente, montoPrestamo, plazoPrestamo) VALUES (?, ?, ?)';
         const values = [clientes, monto, plazo];
+        
         conn.query(sql, values, (err, result) => {
             if (err) {
-                // Manejar el error de la consulta SQL
                 console.error('Error al insertar datos:', err);
                 return res.status(500).send('Error al insertar datos');
             }
+            
             console.log('Datos insertados correctamente');
+
+            const cuota = monto / plazo; // Calcular la cantidad de cada cuota
+            const tasaInteres = 0.05; // Tasa de interés (ejemplo: 5%)
+            let numeroPago = 1; // Inicializar el número de pago en 1
+
+            // Insertar registros en la tabla de amortización
+            for (let i = 0; i < plazo; i++) {
+                const interes = cuota * tasaInteres; // Calcular el interés para cada cuota
+                const abonoTotal = cuota + interes; // Calcular el abono total
+
+                const amortizacionSQL = 'INSERT INTO amortizacion (idPrestamo, numeroPago, cuota, interes, abonoTotal) VALUES (?, ?, ?, ?, ?)';
+                const amortizacionValues = [result.insertId, numeroPago, cuota, interes, abonoTotal]; // result.insertId obtiene el ID del préstamo insertado
+
+                conn.query(amortizacionSQL, amortizacionValues, (err, result) => {
+                    if (err) {
+                        console.error('Error al insertar datos en tabla de amortización:', err);
+                        return res.status(500).send('Error al insertar datos en tabla de amortización');
+                    }
+                    console.log('Datos de amortización insertados correctamente');
+                });
+
+                numeroPago++; // Incrementar el número de pago para el siguiente registro
+            }
+            
             res.redirect('/registro_prestamo');
         });
     });
 };
 
 
-// ******************************** CATALOGO MONTOS Y PLAZOS **********************************************************************************************
+// controller.guardarSelects = (req, res) => {
+//     const { clientes, monto, plazo } = req.body;
+//     req.getConnection((err, conn) => {
+//         if (err) {
+//             // Manejar el error de conexión
+//             console.error('Error de conexión:', err);
+//             return res.status(500).send('Error de conexión');
+//         }
+//         const sql = 'INSERT INTO prestamo (idCliente, montoPrestamo, plazoPrestamo) VALUES (?, ?, ?)';
+//         const values = [clientes, monto, plazo];
+        
+//         conn.query(sql, values, (err, result) => {
+//             if (err) {
+//                 // Manejar el error de la consulta SQL
+//                 console.error('Error al insertar datos:', err);
+//                 return res.status(500).send('Error al insertar datos');
+//             }
+//             console.log('Datos insertados correctamente');
+//             res.redirect('/registro_prestamo');
+//         });
+//     });
+// };
 
+
+
+
+// ******************************** CATALOGO MONTOS Y PLAZOS **********************************************************************************************
 
 const obtenerCatMontos = (conn) => {
     return new Promise((resolve, reject) => {
@@ -227,7 +257,7 @@ const obtenerCatMontos = (conn) => {
                 reject(err);
             } else {
                 resolve(opcionesMontos);
-                
+
             }
         });
     });
@@ -270,7 +300,7 @@ controller.genTabla = (req, res) => {
             if (err) {
                 res.json(err);
             } //Si no encuentra un error VVV
-            
+
             const data = cliente;
             res.render('amortizacion', { data });
         });
@@ -280,24 +310,25 @@ controller.genTabla = (req, res) => {
 
 // ******************************************** TABLA AMORTIZACION **********************************************
 
+
 controller.genAmort = (req, res) => {
-    const { idprestamo } = req.params; //SE EXTRAE IDPRESTAMO
+    const { idCliente } = req.params; //SE EXTRAE IDPRESTAMO
     req.getConnection((err, conn) => {
-        conn.query('SELECT * FROM prestamo WHERE idprestamo = ?', [idprestamo], (err, cliente) => {
-            console.log(cliente);
+        conn.query('SELECT * FROM prestamo WHERE idCliente = ?', [idCliente], (err, cliente) => {
+            console.log('***************DATO CLIENTE:0', cliente);
             //Formateo de fechas
             const fechaRegistro = cliente[0].fecha_registro;
             const fechaFormateada = moment(fechaRegistro).format('DD-MM-YYYY');
-            
+
             //Calcular interés
             const plazoPrestamo = cliente[0].plazoPrestamo;
             const montoPrestamo = cliente[0].montoPrestamo;
-            const interes  = (11/100) * montoPrestamo;
+            const interes = (11 / 100) * montoPrestamo;
             const pagoPlazo = montoPrestamo / plazoPrestamo;
             const abono = pagoPlazo + interes;
 
             const interesTotal = interes * plazoPrestamo;
-            const pagoTotal = (interesTotal*1) + (montoPrestamo*1);
+            const pagoTotal = (interesTotal * 1) + (montoPrestamo * 1);
 
             const dataenviar = {
                 ...cliente[0],
@@ -307,7 +338,7 @@ controller.genAmort = (req, res) => {
                 pagoPlazo: pagoPlazo,
                 interesTotal: interesTotal,
                 pagoTotal: pagoTotal
-                
+
             };
 
             // Obtener fechas de pago cada 15 días
@@ -318,17 +349,71 @@ controller.genAmort = (req, res) => {
                 currentDate = currentDate.add(15, 'days');
             }
             const newDate = currentDate.format('DD-MM-YYYY');
-            console.log('NEW',newDate);
+            console.log('NEW', newDate);
             res.render('amortizacion', {
                 data: dataenviar,
                 fechasPago: fechasPago // Pasar las fechas de pago a la vista
-                
             });
             console.log('FECHA PAGO', fechasPago);
-            console.log('CURRENT',currentDate);
+            console.log('CURRENT', currentDate);
         });
     });
 };
+
+
+
+
+
+
+// controller.genAmort = (req, res) => {
+//     const { idCliente } = req.params; //SE EXTRAE IDPRESTAMO
+//     req.getConnection((err, conn) => {
+//         conn.query('SELECT * FROM prestamo WHERE idCliente = ?', [idCliente], (err, cliente) => {
+//             console.log('***************DATO CLIENTE:0',cliente);
+//             //Formateo de fechas
+//             const fechaRegistro = cliente[0].fecha_registro;
+//             const fechaFormateada = moment(fechaRegistro).format('DD-MM-YYYY');
+
+//             //Calcular interés
+//             const plazoPrestamo = cliente[0].plazoPrestamo;
+//             const montoPrestamo = cliente[0].montoPrestamo;
+//             const interes = (11 / 100) * montoPrestamo;
+//             const pagoPlazo = montoPrestamo / plazoPrestamo;
+//             const abono = pagoPlazo + interes;
+
+//             const interesTotal = interes * plazoPrestamo;
+//             const pagoTotal = (interesTotal * 1) + (montoPrestamo * 1);
+
+//             const dataenviar = {
+//                 ...cliente[0],
+//                 fecha_registro: fechaFormateada,
+//                 interes: interes,
+//                 abono: abono,
+//                 pagoPlazo: pagoPlazo,
+//                 interesTotal: interesTotal,
+//                 pagoTotal: pagoTotal
+
+//             };
+
+//             // Obtener fechas de pago cada 15 días
+//             const fechasPago = [];
+//             let currentDate = moment(fechaRegistro);
+//             while (currentDate.isBefore(moment().add(plazoPrestamo, 'days'))) {
+//                 fechasPago.push(currentDate.format('DD-MM-YYYY'));
+//                 currentDate = currentDate.add(15, 'days');
+//             }
+//             const newDate = currentDate.format('DD-MM-YYYY');
+//             console.log('NEW', newDate);
+//             res.render('amortizacion', {
+//                 data: dataenviar,
+//                 fechasPago: fechasPago // Pasar las fechas de pago a la vista
+
+//             });
+//             console.log('FECHA PAGO', fechasPago);
+//             console.log('CURRENT', currentDate);
+//         });
+//     });
+// };
 
 
 module.exports = controller;
