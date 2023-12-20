@@ -95,7 +95,7 @@ controller.buscar = (req, res) => {
                     // console.log('idCliente: ',idCliente);
                     // Consulta de prestamo utilizando el idCliente extraido
                     conn.query('SELECT * FROM prestamo WHERE idCliente = ?', [idCliente], (err, prestamos) => {
-                        console.log('Datos crudos de la consulta: ',prestamos);
+                        // console.log('Datos crudos de la consulta: ',prestamos);
                         if (err) {
                             console.log('Error');
                         } else {
@@ -194,21 +194,33 @@ controller.guardarSelects = (req, res) => {
                 console.error('Error al insertar datos:', err);
                 return res.status(500).send('Error al insertar datos');
             }
-            
-            // console.log('Datos insertados correctamente');
 
-            const cuota = monto / plazo; // Calcular la cantidad de cada cuota
-            const tasaInteres = 0.05; // Tasa de interés (ejemplo: 5%)
-            let numeroPago = 1; // Inicializar el número de pago en 1
+            const cuota = monto / plazo;
+            const tasaInteres = 0.05;
+            let numeroPago = 1;
 
-            // Insertar registros en la tabla de amortización
+            // Obtener la fecha actual
+            const currentDate = new Date();
+
             for (let i = 0; i < plazo; i++) {
-                const interes = cuota * tasaInteres; // Calcular el interés para cada cuota
-                const abonoTotal = cuota + interes; // Calcular el abono total
+                const interes = cuota * tasaInteres;
+                const abonoTotal = cuota + interes;
 
-                const amortizacionSQL = 'INSERT INTO amortizacion (idPrestamo, numeroPago, cuota, interes, abonoTotal) VALUES (?, ?, ?, ?, ?)';
-                const amortizacionValues = [result.insertId, numeroPago, cuota, interes, abonoTotal]; // result.insertId obtiene el ID del préstamo insertado
-                
+                const fechaPago = new Date(currentDate.getTime() + (i * 15 * 24 * 60 * 60 * 1000)); 
+                // Añadir 15 días por cada iteración
+                // Encontré esta alternativa en Internet, basicamente calcula incluso los milisegundos, de manera de el contador multiplica i por 15 días,
+                // 15 días por 24 horas y así susecivamente
+
+                // " La razón por la que se realiza la operación con milisegundos es porque en JavaScript,
+                //   las fechas se manejan en milisegundos desde el 1 de enero de 1970 (también conocido como "Época" o "Epoch")."
+                // Cuando creamos un objeto de fecha con new Date(), obtenemos el tiempo actual en milisegundos desde la Época.
+                // Esto es lo que se hace con currentDate.getTime().
+
+
+
+                const amortizacionSQL = 'INSERT INTO amortizacion (idPrestamo, numeroPago, cuota, interes, abonoTotal, fecha_registro) VALUES (?, ?, ?, ?, ?, ?)';
+                const amortizacionValues = [result.insertId, numeroPago, cuota, interes, abonoTotal, fechaPago];
+
                 conn.query(amortizacionSQL, amortizacionValues, (err, result) => {
                     if (err) {
                         console.error('Error al insertar datos en tabla de amortización:', err);
@@ -216,12 +228,15 @@ controller.guardarSelects = (req, res) => {
                     }
                     console.log('Datos de amortización insertados correctamente');
                 });
-                numeroPago++; // Al terminar el loop incrementar el número de pago para el siguiente registro
+
+                numeroPago++;
             }
+
             res.redirect('/registro_prestamo');
         });
     });
 };
+
 
 
 
@@ -357,14 +372,19 @@ controller.genAmort = (req, res) => {
             const pagoPlazo = montoPrestamo / plazoPrestamo;
             
             const montoTotal = pagoPlazo * plazoPrestamo;
+
             const interes = (11 / 100) * pagoPlazo;
+            
+            // console.log('interes',interes);
             // console.log(pagoPlazo);
 
             const abono = (pagoPlazo*1) + (interes*1);
             
 
             const interesTotal = interes * plazoPrestamo;
-            // console.log('interesTotal',interesTotal);
+            // console.log('interes',interes);
+            // console.log('plazoPrestamo',plazoPrestamo);
+
             const pagoTotal = (interesTotal * 1) + (montoPrestamo * 1);
 
             const abonoTotal = abono * plazoPrestamo;
@@ -377,7 +397,7 @@ controller.genAmort = (req, res) => {
                     fecha_registro: fechaFormateada,
                     montoPrestamo: results[0].cuota,
                     interesTotal:interesTotal,
-                    interes: results[0].interes,
+                    interes: interes,
                     abono:abono,
                     abonoTotal:abonoTotal,
                     amortizaciones: results,
