@@ -40,7 +40,7 @@ router.get('/amortizacion', clienteController.genTabla);
 
 // router.get('/obtenerNombre', clienteController.obtenerNombre);
 // VER AMORTIZACION
-router.get('/genAmort/:idCliente', clienteController.genAmort);
+router.get('/genAmort/:idCliente/:nombreCliente', clienteController.genAmort);
 
 // router.get('/generarAmoritzacion/:idCliente',clienteController.generarAmoritzacion); -------- Pendiente usar para amortizacion
 

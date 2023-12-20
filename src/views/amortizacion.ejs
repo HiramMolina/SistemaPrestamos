@@ -6,14 +6,10 @@
         <div class="row mt-5">
             <div class="col-md-7">
                 <h4>Cliente:</h4>
-                <h4>
-                    <%= data.nombreCliente %>
-                </h4> <br>
+                <h4><%= data.nombreCliente %></h4> <br>
                 <h4>No. Pago:</h4>
-                <h4>
-                    <%= data.plazoPrestamo %>
-                </h4> <br>
-
+                <h4><%= data.plazoPrestamo %></h4> <br>
+    
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
@@ -25,31 +21,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Dependiendo de que dato jale de plazo prestamo -->
-                        <% for (let i=1; i <=data.plazoPrestamo; i++) { %>
+                        <% for (let i = 1; i <= data.plazoPrestamo; i++) { %>
                             <tr>
-                                <td>
-                                    <%= i %>
-                                </td>
-                                <td>
-                                    <%= data.fecha_registro %>
-                                </td>
-                                <td>$ <%= data.pagoPlazo %>
-                                </td>
-                                <td>$ <%= data.interes %>
-                                </td>
-                                <td>$ <%= data.abono %>
-                                </td>
+                                <td><%= i %></td>
+                                <td><%= data.fecha_registro %></td>
+                                <td>$ <%= data.montoPrestamo %></td>
+                                <td>$ <%= data.interes %></td>
+                                <td>$ <%= data.abono %> </td>
                             </tr>
-                            <% } %>
-                                <td></td>
-                                <td>Total:</td>
-                                <td>$ <%= data.montoPrestamo%>
-                                </td>
-                                <td>$ <%= data.interesTotal%>
-                                </td>
-                                <td>$ <%= data.pagoTotal%>
-                                </td>
+                        <% } %>
+                        <tr>
+                            <td></td>
+                            <td>Total:</td>
+                            <td>$ <%= data.montoTotal %></td>
+                            <td>$ <%= data.interesTotal%></td>
+                            <td>$ <%= data.abonoTotal %></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

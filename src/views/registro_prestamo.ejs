@@ -43,7 +43,8 @@
                         <td><%= otraTablaData.plazoPrestamo %></td>
                         <td>
                             <button class="btn btn-info mt-3">
-                                <a href="/genAmort/<%= clienteData.idCliente %>" class="btn btn-info btn-sm">Accion</a>
+                                <!-- ESTE BOTON BUSCA EL ID EXTARIDO DE LA DATA CLIENTE -->
+                                <a href="/genAmort/<%= clienteData.idCliente %>/<%= clienteData.nombreCliente %>" class="btn btn-info btn-sm">Accion</a>
                             </button>
                         </td>
                     </tr>
